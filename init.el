@@ -38,10 +38,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files (quote ("~/org/inbox.org" "~/org/todo.org")))
+ '(org-agenda-files
+   (quote
+    ("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org")))
  '(package-selected-packages
    (quote
-    (org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##))))
+    (yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -67,11 +69,19 @@
 (use-package magit
   :ensure t)
 
+;; Languages
+
+(use-package yaml-mode
+  :ensure t)
+
 (use-package go-mode
   :ensure t
   :config
   (add-hook 'before-save-hook #'gofmt-before-save)
   (setq gofmt-command "goimports"))
+
+(use-package haskell-mode
+  :ensure t)
 
 (use-package lsp-mode
   :init
@@ -110,7 +120,9 @@
 
 (use-package swiper
   :ensure t
-  :bind (("C-s" . swiper-isearch)))
+  :bind (("C-s" . swiper-isearch)
+	 ("C-r" . swiper-isearch-backward)
+	 ("M-s ." . swiper-isearch-thing-at-point)))
 
 (use-package projectile
   :pin melpa-stable
@@ -144,16 +156,17 @@
   (linum-relative-global-mode))
 
 (use-package org
-  :bind (("C-c c" . org-capture))
+  :bind (("C-c c" . org-capture)
+	 ("C-c a" . org-agenda))
   :config
   (setq org-directory "~/org/")
   (let ((inbox-file (concat org-directory "inbox.org"))
 	(til-file (concat org-directory "til.org")))
     (setq org-default-notes-file inbox-file)
     (setq org-capture-templates
-	  `(("t" "Todo" entry (file ,inbox-file)
+	  `(("t" "TODO" entry (file+headline ,inbox-file "Tasks")
 	     "* TODO %?\n  %i\n  %a")
-	    ("l" "Today I learnt" entry (file ,til-file)
+	    ("l" "Today I learned" entry (file ,til-file)
 	     "* %?\n  %i")))))
 
 (use-package org-roam
@@ -169,3 +182,4 @@
               :map org-mode-map
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
+
