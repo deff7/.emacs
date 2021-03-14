@@ -1,7 +1,26 @@
-(toggle-frame-fullscreen)
+;; (toggle-frame-fullscreen)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(global-auto-revert-mode t)           ; Auto-update buffer if file has changed on disk
+
+;; Auto-update buffers if file has changed on disk
+(global-auto-revert-mode t)
+;; Do it with dired
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
+
+;; Autosave by xah
+(defun xah-save-all-unsaved ()
+  "Save all unsaved files. no ask.
+Version 2019-11-05"
+  (interactive)
+  (save-some-buffers t ))
+(if (version< emacs-version "27")
+    (add-hook 'focus-out-hook 'xah-save-all-unsaved)
+  (setq after-focus-change-function 'xah-save-all-unsaved))
+
+;; Don't create lockfiles.
+(setq create-lockfiles nil)
+
 (fset 'yes-or-no-p 'y-or-n-p)         ; y-or-n-p makes answering questions faster
 (show-paren-mode 1)                   ; Show closing parens by default
 (setq enable-recursive-minibuffers t) ; So I can use M-x in other minibuffers for example
@@ -183,3 +202,4 @@
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate))))
 
+(put 'scroll-left 'disabled nil)
