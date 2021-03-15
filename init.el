@@ -62,7 +62,7 @@ Version 2019-11-05"
     ("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org")))
  '(package-selected-packages
    (quote
-    (yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##))))
+    (yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -126,8 +126,9 @@ Version 2019-11-05"
 	 ("<f1> v" . counsel-describe-variable)
 	 ("<f1> l" . counsel-find-library)      
 	 ("<f2> i" . counsel-info-lookup-symbol)
-	 ("<f2> u" . counsel-unicode-char)      
-	 ("<f2> j" . counsel-set-variable)))
+	 ("<f2> u" . counsel-unicode-char)
+	 ("<f2> j" . counsel-set-variable)
+	 ("M-i" . counsel-imenu)))
 	
 (use-package ivy
   :ensure t
@@ -164,7 +165,13 @@ Version 2019-11-05"
   (setq company-idle-delay 0.1)
   (setq company-minimum-prefix-length 1))
 
-(global-set-key (kbd "M-i") 'imenu)
+(use-package yasnippet
+  :ensure t
+  :init
+  (yas-global-mode 1))
+
+(use-package yasnippet-snippets
+  :ensure t)
 
 (use-package linum-relative
   :ensure t
