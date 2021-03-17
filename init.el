@@ -121,6 +121,7 @@ Version 2019-11-05"
   :ensure t
   :bind (("M-x" . counsel-M-x)
 	 ("C-x C-f" . counsel-find-file)
+	 ("M-s r" . counsel-rg)
 	 ("M-y" . counsel-yank-pop)
 	 ("<f1> f" . counsel-describe-function) 
 	 ("<f1> v" . counsel-describe-variable)
