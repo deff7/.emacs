@@ -1,6 +1,7 @@
 ;; (toggle-frame-fullscreen)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
+(scroll-bar-mode -1)
 
 ;; Auto-update buffers if file has changed on disk
 (global-auto-revert-mode t)
@@ -62,7 +63,7 @@ Version 2019-11-05"
     ("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org")))
  '(package-selected-packages
    (quote
-    (yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##))))
+    (gruvbox-theme yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -78,6 +79,11 @@ Version 2019-11-05"
 
 (unless package-archive-contents
   (package-refresh-contents))
+
+(use-package gruvbox-theme
+  :ensure t
+  :config
+  (load-theme 'gruvbox-light-medium t))
 
 (use-package wgrep
   :config
