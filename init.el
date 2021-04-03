@@ -3,11 +3,19 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
+(set-face-attribute 'default nil
+                    :family "Source Code Pro"
+                    :height 105
+                    :weight 'normal
+                    :width 'normal)
+
 ;; Auto-update buffers if file has changed on disk
 (global-auto-revert-mode t)
-;; Do it with dired
 (setq global-auto-revert-non-file-buffers t)
 (setq auto-revert-verbose nil)
+
+;; Do it with dired
+(add-hook 'dired-mode-hook 'auto-revert-mode)
 
 ;; Autosave by xah
 (defun xah-save-all-unsaved ()
@@ -24,6 +32,7 @@ Version 2019-11-05"
 
 (fset 'yes-or-no-p 'y-or-n-p)         ; y-or-n-p makes answering questions faster
 (show-paren-mode 1)                   ; Show closing parens by default
+(electric-pair-mode 1)
 (setq enable-recursive-minibuffers t) ; So I can use M-x in other minibuffers for example
  
 (setq backup-directory-alist
@@ -58,12 +67,9 @@ Version 2019-11-05"
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-agenda-files
-   (quote
-    ("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org")))
+ '(org-agenda-files '("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org"))
  '(package-selected-packages
-   (quote
-    (gruvbox-theme yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##))))
+   '(sly gruvbox-theme yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -86,6 +92,7 @@ Version 2019-11-05"
   (load-theme 'gruvbox-light-medium t))
 
 (use-package wgrep
+  :ensure t
   :config
   (setq wgrep-auto-save-buffer t)
   (setq wgrep-enable-key "r")
@@ -159,7 +166,8 @@ Version 2019-11-05"
   :config
   (require 'ivy)
   (setq projectile-completion-system 'ivy)
-  (setq projectile-project-search-path '("~/Repos/" "~/Repos/haskell/" "~/org/"))
+  (setq projectile-project-search-path '("~/dev/work" "~/dev/linux" "~/dev/keyboard"))
+  (projectile-add-known-project "~/org")
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map)))
 
@@ -198,6 +206,8 @@ Version 2019-11-05"
     (setq org-default-notes-file inbox-file)
     (setq org-capture-templates
 	  `(("t" "TODO" entry (file+headline ,inbox-file "Tasks")
+	     "* TODO %?\n  %i")
+	    ("T" "TODO annotated" entry (file+headline ,inbox-file "Tasks")
 	     "* TODO %?\n  %i\n  %a")
 	    ("l" "Today I learned" entry (file ,til-file)
 	     "* %?\n  %i")))
@@ -223,3 +233,9 @@ Version 2019-11-05"
               (("C-c n I" . org-roam-insert-immediate))))
 
 (put 'scroll-left 'disabled nil)
+
+(use-package sly
+  :ensure t
+  :init
+  (setq inferior-lisp-program "sbcl"))
+
