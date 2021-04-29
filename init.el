@@ -3,6 +3,8 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 
+(visual-line-mode 1)
+
 (set-face-attribute 'default nil
                     :family "Source Code Pro"
                     :height 105
@@ -69,7 +71,7 @@ Version 2019-11-05"
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org"))
  '(package-selected-packages
-   '(sly gruvbox-theme yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
+   '(restclient org-drill org-fc lsp-haskell haskell-lsp sly gruvbox-theme yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -112,8 +114,22 @@ Version 2019-11-05"
   (add-hook 'before-save-hook #'gofmt-before-save)
   (setq gofmt-command "goimports"))
 
-(use-package haskell-mode
+(use-package lsp-haskell
   :ensure t)
+
+(use-package haskell-mode
+  :ensure t
+  :config
+  ;; TODO: refactor
+  (add-hook 'haskell-mode-hook #'lsp)
+  (add-hook 'haskell-literate-mode-hook #'lsp)
+  (define-key haskell-mode-map (kbd "C-c C-l") 'haskell-process-load-or-reload)
+  (define-key haskell-mode-map (kbd "C-`") 'haskell-interactive-bring)
+  (define-key haskell-mode-map (kbd "C-c C-t") 'haskell-process-do-type)
+  (define-key haskell-mode-map (kbd "C-c C-i") 'haskell-process-do-info)
+  (define-key haskell-mode-map (kbd "C-c C-c") 'haskell-process-cabal-build)
+  (define-key haskell-mode-map (kbd "C-c C-k") 'haskell-interactive-mode-clear)
+  (define-key haskell-mode-map (kbd "C-c c") 'haskell-process-cabal))
 
 (use-package lsp-mode
   :init
@@ -166,7 +182,10 @@ Version 2019-11-05"
   :config
   (require 'ivy)
   (setq projectile-completion-system 'ivy)
-  (setq projectile-project-search-path '("~/dev/work" "~/dev/linux" "~/dev/keyboard"))
+  (setq projectile-project-search-path '("~/dev/work"
+					 "~/dev/linux"
+					 "~/dev/keyboard"
+					 "~/dev/haskell"))
   (projectile-add-known-project "~/org")
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map)))
@@ -230,12 +249,15 @@ Version 2019-11-05"
                ("C-c n g" . org-roam-graph))
               :map org-mode-map
               (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))))
+              (("C-c n I" . org-roam-insert-immediate))
+	      (("C-c n t" . org-roam-tag-add))
+	      (("C-c n r" . org-roam-random-note))))
+
+(use-package org-drill
+  :ensure t)
 
 (put 'scroll-left 'disabled nil)
 
-(use-package sly
-  :ensure t
-  :init
-  (setq inferior-lisp-program "sbcl"))
+(use-package restclient
+  :ensure t)
 
