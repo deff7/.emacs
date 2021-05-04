@@ -136,7 +136,9 @@ Version 2019-11-05"
   (setq lsp-keymap-prefix "C-c l")
   :ensure t
   :hook (go-mode . lsp-deferred)
-  :commands (lsp lsp-deferred))
+  :commands (lsp lsp-deferred)
+   :config
+  (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
 
 (use-package which-key
   :ensure t
