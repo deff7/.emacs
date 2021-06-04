@@ -11,6 +11,15 @@
                     :weight 'normal
                     :width 'normal)
 
+(setenv "PATH"
+	(concat "/usr/local/bin" ":"
+	        "/Users/deff/go/bin" ":"
+		(getenv "PATH")))
+(setq exec-path (append exec-path '("/usr/local/bin" "/Users/deff/go/bin")))
+
+;; Cmd -> Meta
+(setq mac-command-modifier 'meta)
+
 ;; Auto-update buffers if file has changed on disk
 (global-auto-revert-mode t)
 (setq global-auto-revert-non-file-buffers t)
@@ -150,6 +159,15 @@ Version 2019-11-05"
 ;; Ivy Swiper Counsel
 (use-package counsel
   :ensure t
+  :config
+  (setq counsel-rg-base-command `("rg"
+				  "--max-columns" "240"
+				  "--hidden"
+				  "--with-filename"
+				  "--no-heading"
+				  "--line-number"
+				  "--color" "never"
+				  "%s"))
   :bind (("M-x" . counsel-M-x)
 	 ("C-x C-f" . counsel-find-file)
 	 ("M-s r" . counsel-rg)
@@ -185,7 +203,6 @@ Version 2019-11-05"
   (require 'ivy)
   (setq projectile-completion-system 'ivy)
   (setq projectile-project-search-path '("~/dev/work"
-					 "~/dev/linux"
 					 "~/dev/keyboard"
 					 "~/dev/haskell"))
   (projectile-add-known-project "~/org")
