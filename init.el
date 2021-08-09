@@ -11,11 +11,11 @@
                     :weight 'normal
                     :width 'normal)
 
-(setenv "PATH"
-	(concat "/usr/local/bin" ":"
-	        "/Users/deff/go/bin" ":"
-		(getenv "PATH")))
-(setq exec-path (append exec-path '("/usr/local/bin" "/Users/deff/go/bin")))
+;; (setenv "PATH"
+;; 	(concat "/usr/local/bin" ":"
+;; 	        "/Users/deff/go/bin" ":"
+;; 		(getenv "PATH")))
+;; (setq exec-path (append exec-path '("/usr/local/bin" "/Users/deff/go/bin")))
 
 ;; Cmd -> Meta
 (setq mac-command-modifier 'meta)
@@ -80,7 +80,7 @@ Version 2019-11-05"
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org"))
  '(package-selected-packages
-   '(restclient org-drill org-fc lsp-haskell haskell-lsp sly gruvbox-theme yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
+   '(exec-path-from-shell exec-path-from-shel restclient org-drill org-fc lsp-haskell haskell-lsp sly yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -97,10 +97,10 @@ Version 2019-11-05"
 (unless package-archive-contents
   (package-refresh-contents))
 
-(use-package gruvbox-theme
+(use-package exec-path-from-shell
   :ensure t
-  :config
-  (load-theme 'gruvbox-light-medium t))
+  :init
+  (exec-path-from-shell-initialize))
 
 (use-package wgrep
   :ensure t
@@ -149,11 +149,11 @@ Version 2019-11-05"
    :config
   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
 
-(use-package which-key
-  :ensure t
-  :config
-  (setq which-key-idle-delay 0.8)
-  (which-key-mode))
+;; (use-package which-key
+;;   :ensure t
+;;   :config
+;;   (setq which-key-idle-delay 0.8)
+;;   (which-key-mode))
 
 
 ;; Ivy Swiper Counsel
@@ -204,7 +204,8 @@ Version 2019-11-05"
   (setq projectile-completion-system 'ivy)
   (setq projectile-project-search-path '("~/dev/work"
 					 "~/dev/keyboard"
-					 "~/dev/haskell"))
+					 "~/dev/haskell"
+					 "~/dev/ml"))
   (projectile-add-known-project "~/org")
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map)))
