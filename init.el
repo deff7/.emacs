@@ -2,12 +2,12 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-
+(global-display-line-numbers-mode 1)
 (visual-line-mode 1)
 
 (set-face-attribute 'default nil
                     :family "Source Code Pro"
-                    :height 105
+                    :height 150
                     :weight 'normal
                     :width 'normal)
 
@@ -45,6 +45,12 @@ Version 2019-11-05"
 (show-paren-mode 1)                   ; Show closing parens by default
 (electric-pair-mode 1)
 (setq enable-recursive-minibuffers t) ; So I can use M-x in other minibuffers for example
+
+;; Increase minibuffer font size
+(add-hook 'minibuffer-setup-hook 'my-minibuffer-setup)
+(defun my-minibuffer-setup ()
+       (set (make-local-variable 'face-remapping-alist)
+          '((default :height 1.5))))
  
 (setq backup-directory-alist
       `(("." . ,(concat user-emacs-directory "backups"))))
@@ -227,14 +233,6 @@ Version 2019-11-05"
 (use-package yasnippet-snippets
   :ensure t)
 
-(use-package linum-relative
-  :ensure t
-  :init
-  (global-display-line-numbers-mode)
-  :config
-  (setq linum-relative-backend 'display-line-numbers-mode)
-  (linum-relative-global-mode))
-
 (use-package org
   :bind (("C-c c" . org-capture)
 	 ("C-c a" . org-agenda))
@@ -280,4 +278,3 @@ Version 2019-11-05"
 
 (use-package restclient
   :ensure t)
-
