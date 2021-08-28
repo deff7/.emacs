@@ -1,9 +1,11 @@
-;; (toggle-frame-fullscreen)
+(toggle-frame-fullscreen)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode 1)
-(visual-line-mode 1)
+(global-visual-line-mode 1)
+
+(setq-default indent-tabs-mode nil)
 
 (set-face-attribute 'default nil
                     :family "Source Code Pro"
@@ -33,7 +35,7 @@
   "Save all unsaved files. no ask.
 Version 2019-11-05"
   (interactive)
-  (save-some-buffers t ))
+  (save-some-buffers t))
 (if (version< emacs-version "27")
     (add-hook 'focus-out-hook 'xah-save-all-unsaved)
   (setq after-focus-change-function 'xah-save-all-unsaved))
@@ -86,7 +88,7 @@ Version 2019-11-05"
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org"))
  '(package-selected-packages
-   '(exec-path-from-shell exec-path-from-shel restclient org-drill org-fc lsp-haskell haskell-lsp sly yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
+   '(org-bullets smartparens avy cider clojure-mode flycheck-pos-tip flycheck elixir-mode exec-path-from-shell exec-path-from-shel restclient org-drill org-fc lsp-haskell haskell-lsp sly yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -129,6 +131,10 @@ Version 2019-11-05"
   (add-hook 'before-save-hook #'gofmt-before-save)
   (setq gofmt-command "goimports"))
 
+(use-package elixir-mode
+  :ensure t
+  :hook (elixir-mode . lsp-deferred))
+
 (use-package lsp-haskell
   :ensure t)
 
@@ -155,12 +161,19 @@ Version 2019-11-05"
    :config
   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
 
-;; (use-package which-key
-;;   :ensure t
-;;   :config
-;;   (setq which-key-idle-delay 0.8)
-;;   (which-key-mode))
+(use-package which-key
+  :ensure t
+  :config
+  (setq which-key-idle-delay 0.8)
+  (which-key-mode))
 
+(use-package flycheck
+  :ensure t
+  :init (global-flycheck-mode))
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :init (flycheck-pos-tip-mode))
 
 ;; Ivy Swiper Counsel
 (use-package counsel
@@ -178,7 +191,7 @@ Version 2019-11-05"
 	 ("C-x C-f" . counsel-find-file)
 	 ("M-s r" . counsel-rg)
 	 ("M-y" . counsel-yank-pop)
-	 ("<f1> f" . counsel-describe-function) 
+	 ("<f1> f" . counsel-describe-function)
 	 ("<f1> v" . counsel-describe-variable)
 	 ("<f1> l" . counsel-find-library)      
 	 ("<f2> i" . counsel-info-lookup-symbol)
@@ -211,7 +224,9 @@ Version 2019-11-05"
   (setq projectile-project-search-path '("~/dev/work"
 					 "~/dev/keyboard"
 					 "~/dev/haskell"
-					 "~/dev/ml"))
+					 "~/dev/ml"
+					 "~/dev/elixir"
+                                         "~/dev/clojure"))
   (projectile-add-known-project "~/org")
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map)))
@@ -223,7 +238,11 @@ Version 2019-11-05"
   (add-hook 'after-init-hook 'global-company-mode)
   :config
   (setq company-idle-delay 0.1)
-  (setq company-minimum-prefix-length 1))
+  (setq company-minimum-prefix-length 1)
+  ;; Make navigation in the autocomplete dialog more intuitive
+  :bind (:map company-active-map
+              (("C-n" . company-select-next)
+               ("C-p" . company-select-previous))))
 
 (use-package yasnippet
   :ensure t
@@ -233,9 +252,16 @@ Version 2019-11-05"
 (use-package yasnippet-snippets
   :ensure t)
 
+;; Navigation
+
+(use-package avy
+  :ensure t
+  :bind (("C-;" . 'avy-goto-char-timer)))
+
 (use-package org
   :bind (("C-c c" . org-capture)
 	 ("C-c a" . org-agenda))
+  :hook (org-mode . org-indent-mode)
   :config
   (setq org-directory "~/org/")
   (let ((inbox-file (concat org-directory "inbox.org"))
@@ -254,6 +280,10 @@ Version 2019-11-05"
     (setq org-outline-path-complete-in-steps nil)         ; Refile in a single go
     (setq org-refile-use-outline-path t)                  ; Show full paths for refiling
     ))
+
+(use-package org-bullets
+  :ensure t
+  :hook (org-mode . org-bullets-mode))
 
 (use-package org-roam
       :ensure t
@@ -278,3 +308,39 @@ Version 2019-11-05"
 
 (use-package restclient
   :ensure t)
+
+(use-package clojure-mode
+  :ensure t)
+
+(use-package cider
+  :ensure t)
+
+(use-package smartparens
+  :ensure t
+  :config
+  (require 'smartparens-config)
+  :init
+  (smartparens-global-mode)
+  :bind (:map smartparens-mode-map
+              (("C-M-f" . sp-forward-sexp)
+               ("C-M-b" . sp-backward-sexp)
+               ("C-M-n" . sp-next-sexp)
+               ("C-M-p" . sp-previous-sexp)
+               ("C-<down>" . sp-down-sexp)
+               ("C-<up>"   . sp-up-sexp)
+               ("C-<right>" . sp-forward-slurp-sexp)
+               ("C-<left>" . sp-backward-slurp-sexp)
+               ("M-<right>" . sp-forward-barf-sexp)
+               ("M-<left>" . sp-backward-barf-sexp)
+
+               ("C-M-w" . sp-copy-sexp)
+               ("C-M-k" . sp-kill-sexp)
+
+               ;; Wrap / unwrap
+               ("M-[" . sp-backward-unwrap-sexp)
+               ("M-]" . sp-unwrap-sexp)
+
+               ("C-c (" . sp-wrap-round)
+               ("C-c [" . sp-wrap-square)
+               ("C-c {" . sp-wrap-curly))))
+
