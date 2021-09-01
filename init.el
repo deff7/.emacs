@@ -88,7 +88,7 @@ Version 2019-11-05"
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org"))
  '(package-selected-packages
-   '(org-bullets smartparens avy cider clojure-mode flycheck-pos-tip flycheck elixir-mode exec-path-from-shell exec-path-from-shel restclient org-drill org-fc lsp-haskell haskell-lsp sly yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
+   '(protobuf-mode ledger-mode org-bullets smartparens avy cider clojure-mode flycheck-pos-tip flycheck elixir-mode exec-path-from-shell exec-path-from-shel restclient org-drill org-fc lsp-haskell haskell-lsp sly yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -266,6 +266,8 @@ Version 2019-11-05"
   (setq org-directory "~/org/")
   (let ((inbox-file (concat org-directory "inbox.org"))
 	(til-file (concat org-directory "til.org")))
+    (setq org-todo-keywords
+      '((sequence "TODO" "|" "DONE" "CANCELED")))
     (setq org-default-notes-file inbox-file)
     (setq org-capture-templates
 	  `(("t" "TODO" entry (file+headline ,inbox-file "Tasks")
@@ -304,7 +306,10 @@ Version 2019-11-05"
 (use-package org-drill
   :ensure t)
 
-(put 'scroll-left 'disabled nil)
+(use-package ledger-mode
+  :ensure t)
+
+(global-set-key (kbd "C-c $") "₽")
 
 (use-package restclient
   :ensure t)
@@ -343,4 +348,7 @@ Version 2019-11-05"
                ("C-c (" . sp-wrap-round)
                ("C-c [" . sp-wrap-square)
                ("C-c {" . sp-wrap-curly))))
+
+(use-package protobuf-mode
+  :ensure t)
 
