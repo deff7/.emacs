@@ -6,6 +6,7 @@
 (global-visual-line-mode 1)
 
 (setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
 
 (set-face-attribute 'default nil
                     :family "Source Code Pro"
@@ -156,9 +157,11 @@ Version 2019-11-05"
   :init
   (setq lsp-keymap-prefix "C-c l")
   :ensure t
-  :hook (go-mode . lsp-deferred)
+  :hook
+  (go-mode . lsp-deferred)
+  (go-mode . (lambda () (setq tab-width 4)))
   :commands (lsp lsp-deferred)
-   :config
+  :config
   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
 
 (use-package which-key
@@ -350,5 +353,6 @@ Version 2019-11-05"
                ("C-c {" . sp-wrap-curly))))
 
 (use-package protobuf-mode
+  :hook (protobuf-mode . (lambda () (electric-pair-mode -1)))
   :ensure t)
 
