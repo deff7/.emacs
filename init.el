@@ -32,6 +32,7 @@
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 
 ;; Autosave by xah
+;; TODO: maybe use crux package by bbatsov?
 (defun xah-save-all-unsaved ()
   "Save all unsaved files. no ask.
 Version 2019-11-05"
@@ -67,6 +68,9 @@ Version 2019-11-05"
 
 ;; Dired
 (setq dired-dwim-target t)
+
+(use-package dired
+  :bind (("C-x C-j" . dired-jump)))
 
 ;; Save a list of recent files visited. (open recent file with C-x f)
 (recentf-mode 1)
@@ -190,6 +194,8 @@ Version 2019-11-05"
 				  "--line-number"
 				  "--color" "never"
 				  "%s"))
+  ; Remove ^ at beginning of input
+  (setcdr (assoc 'counsel-M-x ivy-initial-inputs-alist) "")
   :bind (("M-x" . counsel-M-x)
 	 ("C-x C-f" . counsel-find-file)
 	 ("M-s r" . counsel-rg)
@@ -268,13 +274,25 @@ Version 2019-11-05"
   :config
   (setq org-directory "~/org/")
   (let ((inbox-file (concat org-directory "inbox.org"))
-	(til-file (concat org-directory "til.org")))
+	    (til-file (concat org-directory "til.org"))
+        (work-file (concat org-directory "work.org"))
+        (journal-file (concat org-directory "journal.org"))
+        (review-file (concat org-directory "review.org"))
+        (workout-file (concat org-directory "workout.org")))
     (setq org-todo-keywords
       '((sequence "TODO" "|" "DONE" "CANCELED")))
     (setq org-default-notes-file inbox-file)
     (setq org-capture-templates
 	  `(("t" "TODO" entry (file+headline ,inbox-file "Tasks")
 	     "* TODO %?\n  %i")
+        ("w" "Work log" entry (file+datetree ,work-file)
+	     "* %?\n\nEntered on %U\n  %i\n  %a")
+        ("j" "Journal" entry (file+datetree ,journal-file)
+	     "* %?\n\nEntered on %U\n  %i\n  %a")
+        ("r" "Review" entry (file+datetree ,review-file)
+	     "* %?\n\nEntered on %U\n  %i\n  %a")
+        ("g" "Workout" entry (file+datetree ,review-file)
+	     "* %?\n\nEntered on %U\n  %i\n  %a")
 	    ("T" "TODO annotated" entry (file+headline ,inbox-file "Tasks")
 	     "* TODO %?\n  %i\n  %a")
 	    ("l" "Today I learned" entry (file ,til-file)
