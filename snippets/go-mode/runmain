@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: Go run main
+# key: runmain
+# --
+func run() error {
+     $0
+
+     return nil
+}
+
+func main() {
+     if err := run(); err != nil {
+        fmt.Fprintln(os.Stderr, err)
+        os.Exit(1)
+     }
+}

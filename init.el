@@ -3,7 +3,7 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (global-display-line-numbers-mode 1)
-(global-visual-line-mode 1)
+;; (global-visual-line-mode 1)
 
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 4)
@@ -66,6 +66,9 @@ Version 2019-11-05"
 ;; Eshell
 (global-set-key (kbd "C-x e") 'eshell)
 
+(use-package vterm
+    :ensure t)
+
 ;; Dired
 (setq dired-dwim-target t)
 
@@ -93,7 +96,7 @@ Version 2019-11-05"
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org"))
  '(package-selected-packages
-   '(protobuf-mode ledger-mode org-bullets smartparens avy cider clojure-mode flycheck-pos-tip flycheck elixir-mode exec-path-from-shell exec-path-from-shel restclient org-drill org-fc lsp-haskell haskell-lsp sly yasnippet-snippets yasnippet yaml-mode haskell-mode org-roam wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
+   '(dash-at-point web-mode org-roam vterm protobuf-mode ledger-mode org-bullets smartparens avy cider clojure-mode flycheck-pos-tip flycheck elixir-mode exec-path-from-shell exec-path-from-shel restclient org-drill org-fc lsp-haskell haskell-lsp sly yasnippet-snippets yasnippet yaml-mode haskell-mode wgrep projectile magit company which-key counsel lsp-mode go-mode use-package linum-relative ##)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -135,6 +138,9 @@ Version 2019-11-05"
   :config
   (add-hook 'before-save-hook #'gofmt-before-save)
   (setq gofmt-command "goimports"))
+
+(use-package web-mode
+  :ensure t)
 
 (use-package elixir-mode
   :ensure t
@@ -235,7 +241,9 @@ Version 2019-11-05"
 					 "~/dev/haskell"
 					 "~/dev/ml"
 					 "~/dev/elixir"
-                                         "~/dev/clojure"))
+                     "~/dev/go"
+                     "~/dev/clojure"
+                     "~/work"))
   (projectile-add-known-project "~/org")
   :bind (:map projectile-mode-map
               ("C-c p" . projectile-command-map)))
@@ -290,9 +298,9 @@ Version 2019-11-05"
         ("j" "Journal" entry (file+datetree ,journal-file)
 	     "* %?\n\nEntered on %U\n  %i\n  %a")
         ("r" "Review" entry (file+datetree ,review-file)
-	     "* %?\n\nEntered on %U\n  %i\n  %a")
-        ("g" "Workout" entry (file+datetree ,review-file)
-	     "* %?\n\nEntered on %U\n  %i\n  %a")
+	     "* %?\n\nEntered on %U\n  %i\n")
+        ("g" "Workout" entry (file+datetree ,workout-file)
+	     "* %?\n\nEntered on %U\n  %i\n")
 	    ("T" "TODO annotated" entry (file+headline ,inbox-file "Tasks")
 	     "* TODO %?\n  %i\n  %a")
 	    ("l" "Today I learned" entry (file ,til-file)
@@ -314,15 +322,17 @@ Version 2019-11-05"
       (after-init . org-roam-mode)
       :custom
       (org-roam-directory "~/org-roam/")
-      :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph))
-              :map org-mode-map
-              (("C-c n i" . org-roam-insert))
-              (("C-c n I" . org-roam-insert-immediate))
-	      (("C-c n t" . org-roam-tag-add))
-	      (("C-c n r" . org-roam-random-note))))
+      :config
+      (setq org-roam-v2-ack t)
+      (org-roam-db-autosync-mode)
+      :bind 
+      (("C-c n l" . org-roam-buffer-toggle)
+       ("C-c n f" . org-roam-node-find)
+       ("C-c n g" . org-roam-graph)
+       ("C-c n i" . org-roam-node-insert)
+       ("C-c n c" . org-roam-capture)
+	   ("C-c n t" . org-roam-tag-add)
+	   ("C-c n r" . org-roam-node-random)))
 
 (use-package org-drill
   :ensure t)
@@ -373,4 +383,11 @@ Version 2019-11-05"
 (use-package protobuf-mode
   :hook (protobuf-mode . (lambda () (electric-pair-mode -1)))
   :ensure t)
+
+(use-package dash-at-point
+  :ensure t
+  :config
+  (add-to-list 'dash-at-point-mode-alist '(go-mode . "go"))
+  :bind (("C-c d" . dash-at-point)))
+
 
