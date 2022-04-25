@@ -74,8 +74,10 @@ Version 2019-11-05"
 (global-set-key (kbd "C-c b") 'previous-buffer)
 (global-set-key (kbd "C-c f") 'next-buffer)
 
-;; Eshell
-(global-set-key (kbd "C-x e") 'eshell)
+;; Shell
+(use-package shell-here
+  :ensure t
+  :bind (("C-c e" . shell-here)))
 
 ;; Dired
 (setq dired-dwim-target t)
@@ -104,7 +106,7 @@ Version 2019-11-05"
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org"))
  '(package-selected-packages
-   '(shackle flycheck-clj-kondo yasnippet-snippets yaml-mode which-key wgrep web-mode vterm use-package smartparens restclient protobuf-mode projectile org-roam org-drill org-bullets magit lsp-mode go-mode flycheck-pos-tip exec-path-from-shell dash-at-point counsel company cider avy)))
+   '(shell-here elixir-mode shackle flycheck-clj-kondo yasnippet-snippets yaml-mode which-key wgrep web-mode vterm use-package smartparens restclient protobuf-mode projectile org-roam org-drill org-bullets magit lsp-mode go-mode flycheck-pos-tip exec-path-from-shell dash-at-point counsel company cider avy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -146,12 +148,14 @@ Version 2019-11-05"
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
+  (add-to-list 'exec-path "/Users/smalenkov/.emacs.d/bin/elixir-ls-1.12")
   :ensure t
   :hook
   (go-mode . lsp-deferred)
   (go-mode . (lambda () (setq tab-width 4)))
   :commands (lsp lsp-deferred)
   :config
+  (setq lsp-go-build-flags ["-tags=e2e"])
   (define-key lsp-mode-map (kbd "C-c l") lsp-command-map))
 
 (use-package which-key
@@ -224,6 +228,7 @@ Version 2019-11-05"
 					 "~/dev/keyboard"
 					 "~/dev/go"
 					 "~/dev/clojure"
+                     "~/dev/elixir"
 					 "~/work"))
   (projectile-add-known-project "~/org")
   :bind (:map projectile-mode-map
@@ -377,8 +382,12 @@ Version 2019-11-05"
   :ensure
   :init
   (setq shackle-rules '((compilation-mode :noselect t)
-                        ("magit.*" :regexp t :same t :select t))
+                        ("magit(?!-diff)[^:]?: .*" :regexp t :same t :select t)
+                        ("magit-diff.*" :regexp t :align t :noselect t))
         shackle-default-rule nil)
   
   (shackle-mode))
 
+(use-package elixir-mode
+  :ensure t
+  :hook (elixir-mode . lsp-deferred))
