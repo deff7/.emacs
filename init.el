@@ -43,7 +43,6 @@
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 
 ;; Autosave by xah
-;; TODO: maybe use crux package by bbatsov?
 (defun xah-save-all-unsaved ()
   "Save all unsaved files. no ask.
 Version 2019-11-05"
@@ -95,6 +94,8 @@ Version 2019-11-05"
 
 (use-package all-the-icons-dired
   :ensure t
+  :config
+  (setq all-the-icons-dired-monochrome nil)
   :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; Save a list of recent files visited. (open recent file with C-x f)
@@ -388,7 +389,6 @@ Version 2019-11-05"
   :config
   (add-to-list 'dash-at-point-mode-alist '(go-mode . "go"))
   :bind (("C-c d" . dash-at-point)))
-
 
 (use-package shackle
   :ensure
