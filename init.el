@@ -85,6 +85,18 @@ Version 2019-11-05"
 (use-package dired
   :bind (("C-x C-j" . dired-jump)))
 
+(use-package reveal-in-osx-finder
+  :ensure t
+  :bind (("C-x f" . reveal-in-osx-finder)))
+
+(use-package all-the-icons
+  :ensure t
+  :if (display-graphic-p))
+
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (dired-mode . all-the-icons-dired-mode))
+
 ;; Save a list of recent files visited. (open recent file with C-x f)
 (recentf-mode 1)
 (setq recentf-max-saved-items 100) ;; just 20 is too recent
@@ -106,7 +118,7 @@ Version 2019-11-05"
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/org/next-step.org" "~/org/inbox.org" "~/org/todo.org"))
  '(package-selected-packages
-   '(shell-here elixir-mode shackle flycheck-clj-kondo yasnippet-snippets yaml-mode which-key wgrep web-mode vterm use-package smartparens restclient protobuf-mode projectile org-roam org-drill org-bullets magit lsp-mode go-mode flycheck-pos-tip exec-path-from-shell dash-at-point counsel company cider avy)))
+   '(all-the-icons-dired all-the-icons all-the-icon reveal-in-osx-finder shell-here elixir-mode shackle flycheck-clj-kondo yasnippet-snippets yaml-mode which-key wgrep web-mode vterm use-package smartparens restclient protobuf-mode projectile org-roam org-drill org-bullets magit lsp-mode go-mode flycheck-pos-tip exec-path-from-shell dash-at-point counsel company cider avy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -383,6 +395,7 @@ Version 2019-11-05"
   :init
   (setq shackle-rules '((compilation-mode :noselect t)
                         ("magit(?!-diff)[^:]?: .*" :regexp t :same t :select t)
+                        ("*Diff*" :same t :select t :inhibit-window-quit t)
                         ("magit-diff.*" :regexp t :align t :noselect t))
         shackle-default-rule nil)
   
