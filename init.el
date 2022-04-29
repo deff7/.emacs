@@ -161,7 +161,7 @@ Version 2019-11-05"
 (use-package lsp-mode
   :init
   (setq lsp-keymap-prefix "C-c l")
-  (add-to-list 'exec-path "/Users/smalenkov/.emacs.d/bin/elixir-ls-1.12")
+  (add-to-list 'exec-path "/Users/deff/.emacs.d/bin/elixir-ls-1.12")
   :ensure t
   :hook
   (go-mode . lsp-deferred)
